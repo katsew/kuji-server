@@ -1,0 +1,13 @@
+{
+    "name": "katsew/kuji-sample",
+    "require": {
+        "apache/thrift": "^0.10.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "katsew",
+            "email": "y.katsew@gmail.com"
+        }
+    ]
+}
