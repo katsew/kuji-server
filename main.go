@@ -8,6 +8,7 @@ import (
 	"github.com/katsew/kuji"
 	"github.com/katsew/kuji-redis"
 	"github.com/katsew/kuji-server/services/kuji"
+	"log"
 	"os"
 )
 
@@ -59,6 +60,7 @@ func main() {
 			kujiProcessor,
 		)
 		server := thrift.NewTSimpleServer4(processor, transport, transportFactory, protocolFactory)
+		log.Print("Serving...")
 		server.Serve()
 
 	}
