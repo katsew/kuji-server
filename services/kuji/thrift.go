@@ -12,11 +12,13 @@ func NewThriftGachaService(
 	transport thrift.TServerTransport,
 	transportFactory thrift.TTransportFactory,
 	protocolFactory thrift.TProtocolFactory,
-	strategy Kuji.KujiStrategy,
+	config Kuji.KujiStrategyConfig,
 ) thrift.TProcessor {
 
+	k := Kuji.NewKuji()
+	k.Use("redis", config)
 	handler := kujiService{
-		Kuji.NewKuji(strategy),
+		k,
 	}
 	kujiHandler = &handler
 	processor := ThKuji.NewKujiServiceProcessor(kujiHandler)
@@ -36,7 +38,7 @@ func (k kujiService) ThRegisterCandidatesWithKey(req *ThKuji.ReqCandidates) (*Th
 		candidates = append(candidates, k)
 	}
 
-	_, err := kujiHandler.Kuji.RegisterCandidatesWithKey(req.Key, candidates)
+	_, err := kujiHandler.Kuji.RegisterCandidatesWithKey("redis", req.Key, candidates)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +52,7 @@ func (k kujiService) ThRegisterCandidatesWithKey(req *ThKuji.ReqCandidates) (*Th
 
 func (k kujiService) ThPickOneByKey(req *ThKuji.ReqPickOneByKey) (*ThKuji.Response, error) {
 
-	picked, err := kujiHandler.Kuji.PickOneByKey(req.Key)
+	picked, err := kujiHandler.Kuji.PickOneByKey("redis", req.Key)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +70,7 @@ func (k kujiService) ThPickOneByKey(req *ThKuji.ReqPickOneByKey) (*ThKuji.Respon
 
 func (k kujiService) ThPickOneByKeyAndIndex(req *ThKuji.ReqPickOneByKeyAndIndex) (*ThKuji.Response, error) {
 
-	picked, err := kujiHandler.Kuji.PickOneByKeyAndIndex(req.Key, req.Index)
+	picked, err := kujiHandler.Kuji.PickOneByKeyAndIndex("redis", req.Key, req.Index)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +88,7 @@ func (k kujiService) ThPickOneByKeyAndIndex(req *ThKuji.ReqPickOneByKeyAndIndex)
 
 func (k kujiService) ThPickAndDeleteOneByKey(req *ThKuji.ReqPickOneByKey) (*ThKuji.Response, error) {
 
-	picked, err := kujiHandler.Kuji.PickOneByKey(req.Key)
+	picked, err := kujiHandler.Kuji.PickOneByKey("redis", req.Key)
 	if err != nil {
 		return nil, err
 	}

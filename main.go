@@ -5,6 +5,7 @@ import (
 	"git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/go-redis/redis"
 	"github.com/katsew/core"
+	"github.com/katsew/kuji"
 	"github.com/katsew/kuji-redis"
 	"github.com/katsew/kuji-server/services/kuji"
 	"os"
@@ -48,7 +49,11 @@ func main() {
 			Password: "",
 			DB:       0,
 		})
-		kujiProcessor := services.NewThriftGachaService(transport, transportFactory, protocolFactory, strategy)
+		config := kuji.KujiStrategyConfig{
+			Strategy: strategy,
+			FailOver: nil,
+		}
+		kujiProcessor := services.NewThriftGachaService(transport, transportFactory, protocolFactory, config)
 		processor.RegisterProcessor(
 			"KujiService",
 			kujiProcessor,
